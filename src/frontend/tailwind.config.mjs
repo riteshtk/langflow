@@ -33,12 +33,14 @@ const config = {
       center: true,
       screens: {
         "2xl": "1400px",
+        "3xl": "1500px",
       },
     },
     extend: {
       screens: {
         xl: "1200px",
         "2xl": "1400px",
+        "3xl": "1500px",
       },
       keyframes: {
         // Overlay animations
@@ -108,17 +110,13 @@ const config = {
         "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       colors: {
-        "logo-orange": "rgb(255, 159, 28)", // Top square
-        "logo-teal": "rgb(45, 212, 191)",   // Left circle
-        "logo-blue": "rgb(246, 243, 59)",   // Right square
-        "logo-purple": "rgb(139, 92, 246)", // Connection arrows
         "frozen-blue": "rgba(128, 190, 219, 0.86)", // Custom blue color for the frozen effect
         "frosted-glass": "rgba(255, 255, 255, 0.8)", // Custom frosted glass effect
-        "component-icon": "rgb(255, 159, 28)", // Logo orange
-        "flow-icon": "rgb(45, 212, 191)",      // Logo teal
+        "component-icon": "var(--component-icon)",
+        "flow-icon": "var(--flow-icon)",
         "low-indigo": "var(--low-indigo)",
         "chat-send": "var(--chat-send)",
-        connection: "rgb(139, 92, 246)", // Using logo purple for connections
+        connection: "var(--connection)",
         "almost-dark-gray": "var(--almost-dark-gray)",
         "almost-light-blue": "var(--almost-light-blue)",
         "almost-medium-gray": "var(--almost-medium-gray)",
@@ -214,9 +212,9 @@ const config = {
           hover: "hsl(var(--primary-hover))",
         },
         secondary: {
-          DEFAULT: "rgb(45, 212, 191)", // Using logo teal as secondary
+          DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          hover: "rgb(20, 184, 166)",
+          hover: "hsl(var(--secondary-hover))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -227,7 +225,7 @@ const config = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "rgb(59, 130, 246)", // Using logo blue as accent
+          DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
         "accent-amber": {
@@ -515,7 +513,6 @@ const config = {
       addVariant("group-increment-hover", ":merge(.group-increment):hover &");
       addVariant("group-decrement-hover", ":merge(.group-decrement):hover &");
     }),
-    require("daisyui"),
   ],
 };
 
