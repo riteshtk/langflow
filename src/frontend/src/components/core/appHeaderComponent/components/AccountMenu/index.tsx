@@ -7,6 +7,7 @@ import {
   TWITTER_URL,
 } from "@/constants/constants";
 import { useLogout } from "@/controllers/API/queries/auth";
+import { CustomProfileIcon } from "@/customization/components/custom-profile-icon";
 import { ENABLE_DATASTAX_LANGFLOW } from "@/customization/feature-flags";
 import { useCustomNavigate } from "@/customization/hooks/use-custom-navigate";
 import useAuthStore from "@/stores/authStore";
@@ -50,9 +51,7 @@ export const AccountMenu = () => {
             className="group h-9 w-9 overflow-hidden rounded-full ring-2 ring-border/50 transition-all duration-300 hover:ring-4 hover:ring-border focus-visible:outline-0 active:scale-95"
             data-testid="user-profile-settings"
           >
-            <div className="transition-transform duration-300 group-hover:scale-110">
-              <ProfileIcon />
-            </div>
+            <CustomProfileIcon />
           </div>
         </HeaderMenuToggle>
         <HeaderMenuItems position="right" classNameSize="w-[320px]">

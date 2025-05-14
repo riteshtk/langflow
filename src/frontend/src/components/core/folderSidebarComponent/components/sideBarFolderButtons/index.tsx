@@ -21,6 +21,7 @@ import {
   usePostUploadFolders,
 } from "@/controllers/API/queries/folders";
 import { useGetDownloadFolders } from "@/controllers/API/queries/folders/use-get-download-folders";
+import { CustomStoreButton } from "@/customization/components/custom-store-button";
 import {
   ENABLE_CUSTOM_PARAM,
   ENABLE_DATASTAX_LANGFLOW,
@@ -523,12 +524,9 @@ const SideBarFoldersButtonsComponent = ({
         )}
       </SidebarContent>
       {ENABLE_FILE_MANAGEMENT && (
-        <SidebarFooter className="border-t border-border/50 bg-background/60 dark:bg-background/40 rounded-b-xl">
-          <div className="px-4 py-3">
-            <div className="mb-3 px-2 flex items-center justify-between">
-              <h2 className="text-sm font-semibold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:from-primary/80 dark:to-primary">Resources</h2>
-              <div className="h-[2px] flex-1 mx-3 bg-gradient-to-r from-border/50 to-transparent"></div>
-            </div>
+        <SidebarFooter className="border-t">
+          <div className="grid w-full items-center gap-2 p-2">
+            {/* {!ENABLE_DATASTAX_LANGFLOW && <CustomStoreButton />} */}
             <SidebarMenuButton
               isActive={checkPathFiles}
               onClick={() => handleFilesClick?.()}

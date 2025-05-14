@@ -218,7 +218,7 @@ class YouTubeCommentsComponent(Component):
                     column_order.extend(["like_count", "reply_count"])
 
                 comments_df = comments_df[column_order]
-
+                self.logger.info(f"Comments DataFrame: {comments_df}")
                 return DataFrame(comments_df)
 
         except HttpError as e:
