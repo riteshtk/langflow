@@ -27,7 +27,7 @@ test.skip(
 
     await page
       .getByTestId("textarea_str_url")
-      .fill("https://www.youtube.com/watch?v=VqhCQZaH4Vs");
+      .fill("https://www.youtube.com/watch?v=5MWT_doo68k&t=17s");
 
     await page.getByTestId("fit_view").click();
 
