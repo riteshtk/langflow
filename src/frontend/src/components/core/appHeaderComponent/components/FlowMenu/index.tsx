@@ -219,8 +219,8 @@ export const MenuBar = memo((): JSX.Element => {
   ]);
 
   useEffect(() => {
-    if (currentFlowName && !editingName) {
-      setFlowName(currentFlowName);
+    if (!editingName) {
+      setFlowName(currentFlowName ?? "Untitled Flow");
     }
   }, [currentFlowName, editingName]);
 
@@ -236,7 +236,8 @@ export const MenuBar = memo((): JSX.Element => {
       : getNumberFromString(currentFlowGradient ?? currentFlowId ?? "")) %
     swatchColors.length;
 
-  return currentFlowName && onFlowPage ? (
+  return onFlowPage ? (
+    
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -300,7 +301,7 @@ export const MenuBar = memo((): JSX.Element => {
                 onKeyDown={handleKeyDown}
                 onFocus={() => {
                   setEditingName(true);
-                  setFlowName(currentFlowName);
+                  setFlowName(currentFlowName ?? "Untitled Flow");
                   const flows = useFlowsManagerStore.getState().flows;
                   setFlowNames(
                     flows
@@ -312,6 +313,7 @@ export const MenuBar = memo((): JSX.Element => {
                 value={flowName}
                 id="input-flow-name"
                 data-testid="input-flow-name"
+                placeholder="Untitled Flow"
               />
               <span
                 ref={measureRef}
@@ -319,7 +321,7 @@ export const MenuBar = memo((): JSX.Element => {
                 aria-hidden="true"
                 data-testid="flow_name"
               >
-                {flowName}
+                {flowName || "Untitled Flow"}
               </span>
             </div>
           </div>
