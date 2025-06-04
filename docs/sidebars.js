@@ -40,6 +40,7 @@ module.exports = {
         "Concepts/concepts-flows",
         "Concepts/concepts-objects",
         "Concepts/concepts-publish",
+        "Concepts/embedded-chat-widget",
         "Concepts/mcp-server",
         "Concepts/concepts-file-management",
         "Concepts/concepts-voice-mode",
@@ -124,6 +125,17 @@ module.exports = {
           id: "Develop/webhook",
           label: "Webhook"
         },
+        {
+          type: "category",
+          label: "Clients",
+          items: [
+            {
+              type: "doc",
+              id: "Develop/Clients/typescript-client",
+              label: "TypeScript Client"
+            }
+          ]
+        },
       ],
     },
     {
@@ -139,6 +151,11 @@ module.exports = {
           type: "doc",
           id: "Deployment/deployment-docker",
           label: "Docker"
+        },
+        {
+          type: "doc",
+          id: "Deployment/deployment-caddyfile",
+          label: "Deploy Langflow on a remote server"
         },
         {
           type: "category",
@@ -248,6 +265,7 @@ module.exports = {
           items: [
             "Integrations/Nvidia/integrations-nvidia-ingest",
             "Integrations/Nvidia/integrations-nvidia-nim-wsl2",
+            "Integrations/Nvidia/integrations-nvidia-system-assist",
           ],
         },
       ],

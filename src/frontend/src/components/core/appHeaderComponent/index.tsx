@@ -14,7 +14,6 @@ import { useCustomNavigate } from "@/customization/hooks/use-custom-navigate";
 import useTheme from "@/customization/hooks/use-custom-theme";
 import useAlertStore from "@/stores/alertStore";
 import { useEffect, useRef, useState } from "react";
-import { AccountMenu } from "./components/AccountMenu";
 import FlowMenu from "./components/FlowMenu";
 import LangflowCounts from "./components/langflow-counts";
 import {
@@ -71,7 +70,7 @@ export default function AppHeader(): JSX.Element {
   const getNotificationBadge = () => {
     const baseClasses = "absolute h-1 w-1 rounded-full bg-destructive";
     return notificationCenter
-      ? `${baseClasses} right-[5.1rem] top-[5px]`
+      ? `${baseClasses} right-[0.3rem] top-[5px]`
       : "hidden";
   };
 
