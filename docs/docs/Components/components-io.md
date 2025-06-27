@@ -23,7 +23,10 @@ This component collects user input as `Text` strings from the chat and wraps it 
 
 It can optionally store the message in a chat history.
 
-### Inputs
+<details>
+<summary>Parameters</summary>
+
+**Inputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
@@ -31,17 +34,19 @@ It can optionally store the message in a chat history.
 |should_store_message|Store Messages|Store the message in the history.|
 |sender|Sender Type|The type of sender.|
 |sender_name|Sender Name|The name of the sender.|
-|session_id|Session ID|The session ID of the chat. If empty, the current session ID parameter is used.|
+|session_id|Session ID|The unique identifier for the chat session. If empty, the current session ID parameter is used.|
 |files|Files|The files to be sent with the message.|
 |background_color|Background Color|The background color of the icon.|
 |chat_icon|Icon|The icon of the message.|
 |text_color|Text Color|The text color of the name.|
 
-### Outputs
+**Outputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |message|Message|The resulting chat message object with all specified properties.|
+
+</details>
 
 ### Message method
 
@@ -69,18 +74,22 @@ The **Text Input** component accepts a text string input and returns a `Message`
 
 The output does not appear in the **Playground**.
 
-### Inputs
+<details>
+<summary>Parameters</summary>
+
+**Inputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |input_value|Text|The text/content to be passed as output.|
 
-### Outputs
+**Outputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |text|Text|The resulting text message.|
 
+</details>
 
 ## Chat Output
 
@@ -91,7 +100,10 @@ The component accepts the following input types.
 * [DataFrame](/concepts-objects#dataframe-object)
 * [Message](/concepts-objects#message-object)
 
-### Inputs
+<details>
+<summary>Parameters</summary>
+
+**Inputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
@@ -99,19 +111,20 @@ The component accepts the following input types.
 |should_store_message|Store Messages|The flag to store the message in the history.|
 |sender|Sender Type|The type of sender.|
 |sender_name|Sender Name|The name of the sender.|
-|session_id|Session ID|The session ID of the chat. If empty, the current session ID parameter is used.|
+|session_id|Session ID|The unique identifier for the chat session. If empty, the current session ID parameter is used.|
 |data_template|Data Template|The template to convert Data to Text. If the option is left empty, it is dynamically set to the Data's text key.|
 |background_color|Background Color|The background color of the icon.|
 |chat_icon|Icon|The icon of the message.|
 |text_color|Text Color|The text color of the name.|
 |clean_data|Basic Clean Data|When enabled, `DataFrame` inputs are cleaned when converted to text. Cleaning removes empty rows, empty lines in cells, and multiple newlines.|
 
-### Outputs
+**Outputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |message|Message|The resulting chat message object with all specified properties.|
 
+</details>
 
 ## Text Output
 
@@ -119,17 +132,22 @@ The **Text Output** takes a single input of text and returns a [Message](/concep
 
 The output does not appear in the **Playground**.
 
-### Inputs
+<details>
+<summary>Parameters</summary>
+
+**Inputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |input_value|Text|The text to be passed as output.|
 
-### Outputs
+**Outputs**
 
 | Name | Display Name | Info |
 |------|--------------|------|
 |text|Text|The resulting text message.|
+
+</details>
 
 ## Chat components example flow
 
@@ -174,7 +192,7 @@ Click **Outputs** to view the sent message:
 ```text
   "outputs":
     "text_output":
-      "message": "To install Docker on a Mac with an M1 chip, you should use Docker Desktop for Mac, which is optimized for Apple Silicon. Here’s a step-by-step guide to installing Docker on your M1 Mac:\n\n1.
+      "message": "To install Docker on a Mac with an M1 chip, you should use Docker Desktop for Mac, which is optimized for Apple Silicon. Here's a step-by-step guide to installing Docker on your M1 Mac:\n\n1.
       ...
       "type": "text"
 ```
@@ -193,7 +211,7 @@ To send the same example messages programmatically to your Langflow server, do t
 It looks similar to this:
 ```text
 curl --request POST \
-  --url 'http://127.0.0.1:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
+  --url 'http://localhost:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
   --header 'Content-Type: application/json' \
   --data '{
   "input_value": "What's the recommended way to install Docker on Mac M1?",
@@ -208,7 +226,7 @@ Note the `output_type` and `input_type` parameters that are passed with the mess
 4. Add a custom `session_id` to the message's `data` object.
 ```text
 curl --request POST \
-  --url 'http://127.0.0.1:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
+  --url 'http://localhost:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
   --header 'Content-Type: application/json' \
   --data '{
   "input_value": "Whats the recommended way to install Docker on Mac M1",
@@ -228,7 +246,7 @@ A new chat session called `docker-question-on-m1` has appeared, using your uniqu
 For example, disabling storing messages from the **Chat Input** component adds a **Tweak** to your command:
 ```text
 curl --request POST \
-  --url 'http://127.0.0.1:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
+  --url 'http://localhost:7860/api/v1/run/51eed711-4530-4fdc-9bce-5db4351cc73a?stream=false' \
   --header 'Content-Type: application/json' \
   --data '{
   "input_value": "Text to input to the flow",
@@ -244,3 +262,7 @@ curl --request POST \
 
 To confirm your command is using the tweak, navigate to the **Logs** pane and view the request from the **Chat Input** component.
 The value for `should_store_message` is `false`.
+
+## See also
+
+- [Session ID](/session-id)

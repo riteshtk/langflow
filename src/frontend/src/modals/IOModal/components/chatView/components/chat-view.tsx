@@ -1,5 +1,6 @@
 import LangflowLogo from "@/assets/LangflowLogo.png?react";
 import { TextEffectPerChar } from "@/components/ui/textAnimation";
+import CustomChatInput from "@/customization/components/custom-chat-input";
 import { ENABLE_IMAGE_ON_PLAYGROUND } from "@/customization/feature-flags";
 import { track } from "@/customization/utils/analytics";
 import { useMessagesStore } from "@/stores/messagesStore";
@@ -18,7 +19,6 @@ import useFlowStore from "../../../../../stores/flowStore";
 import { ChatMessageType } from "../../../../../types/chat";
 import { chatViewProps } from "../../../../../types/components";
 import FlowRunningSqueleton from "../../flow-running-squeleton";
-import ChatInput from "../chatInput/chat-input";
 import useDragAndDrop from "../chatInput/hooks/use-drag-and-drop";
 import { useFileHandler } from "../chatInput/hooks/use-file-handler";
 import ChatMessage from "../chatMessage/chat-message";
@@ -191,20 +191,24 @@ export default function ChatView({
     if (!messagesRef.current) return;
 
     const { scrollTop, scrollHeight, clientHeight } = messagesRef.current;
-    const atBottom = scrollHeight - clientHeight <= scrollTop + 3;
+    const atBottom = scrollHeight - clientHeight <= scrollTop + 30;
 
     if (scrollDir === Direction.Up) {
       setCanScroll(false);
       setScrolledUp(true);
     } else {
-      if (atBottom || !scrolledUp) {
+      if (atBottom && !scrolledUp) {
         setCanScroll(true);
       }
       setScrolledUp(false);
     }
   };
+  const setPlaygroundScrollBehaves = useUtilityStore(
+    (state) => state.setPlaygroundScrollBehaves,
+  );
 
   useEffect(() => {
+    setPlaygroundScrollBehaves("smooth");
     setCanScroll(true);
   }, [chatHistory?.length]);
 
@@ -288,11 +292,11 @@ export default function ChatView({
       </div>
 
       <div className="m-auto w-full max-w-[768px] md:w-5/6">
-        <ChatInput
+        <CustomChatInput
           playgroundPage={!!playgroundPage}
           noInput={!inputTypes.includes("ChatInput")}
-          sendMessage={({ repeat, files }) => {
-            sendMessage({ repeat, files });
+          sendMessage={async ({ repeat, files }) => {
+            await sendMessage({ repeat, files });
             track("Playground Message Sent");
           }}
           inputRef={ref}

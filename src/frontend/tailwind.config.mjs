@@ -33,12 +33,14 @@ const config = {
       center: true,
       screens: {
         "2xl": "1400px",
+        "3xl": "1500px",
       },
     },
     extend: {
       screens: {
         xl: "1200px",
         "2xl": "1400px",
+        "3xl": "1500px",
       },
       keyframes: {
         // Overlay animations
@@ -108,17 +110,76 @@ const config = {
         "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       colors: {
-        "logo-orange": "rgb(255, 159, 28)", // Top square
-        "logo-teal": "rgb(45, 212, 191)",   // Left circle
-        "logo-blue": "rgb(246, 243, 59)",   // Right square
-        "logo-purple": "rgb(139, 92, 246)", // Connection arrows
+        // Premium Sidebar Colors
+        "sidebar": {
+          "container-light": "rgba(248, 250, 252, 0.95)", // slate-50/95
+          "container-light-via": "rgba(255, 255, 255, 0.9)", // white/90
+          "container-light-to": "rgba(241, 245, 249, 0.85)", // slate-100/85
+          "container-dark": "rgba(15, 23, 42, 0.95)", // slate-900/95
+          "container-dark-via": "rgba(30, 41, 59, 0.9)", // slate-800/90
+          "container-dark-to": "rgba(15, 23, 42, 0.85)", // slate-900/85
+          "border-light": "rgba(226, 232, 240, 0.6)", // slate-200/60
+          "border-dark": "rgba(51, 65, 85, 0.6)", // slate-700/60
+          "shadow-light": "rgba(226, 232, 240, 0.3)", // slate-200/30
+          "shadow-dark": "rgba(15, 23, 42, 0.5)", // slate-900/50
+        },
+        "folder": {
+          // Indigo & Purple Theme for Folders
+          "active-light": "linear-gradient(to right, #e0e7ff, #f3e8ff)", // indigo-100 to purple-100
+          "active-dark": "linear-gradient(to right, rgba(67, 56, 202, 0.3), rgba(147, 51, 234, 0.3))", // indigo-800/30 to purple-800/30
+          "hover-light": "linear-gradient(to right, #eef2ff, #faf5ff)", // indigo-50 to purple-50
+          "hover-dark": "linear-gradient(to right, rgba(67, 56, 202, 0.2), rgba(147, 51, 234, 0.2))", // indigo-900/20 to purple-900/20
+          "icon-light": "#4f46e5", // indigo-600
+          "icon-dark": "#818cf8", // indigo-400
+          "text-light": "#4338ca", // indigo-700
+          "text-dark": "#c7d2fe", // indigo-300
+          "bg-light": "linear-gradient(to bottom right, #e0e7ff, #f3e8ff)", // indigo-100 to purple-100
+          "bg-dark": "linear-gradient(to bottom right, rgba(67, 56, 202, 0.4), rgba(147, 51, 234, 0.4))", // indigo-800/40 to purple-800/40
+          "default-light": "linear-gradient(to bottom right, #f1f5f9, #e2e8f0)", // slate-100 to slate-200
+          "default-dark": "linear-gradient(to bottom right, rgba(51, 65, 85, 0.5), rgba(71, 85, 105, 0.5))", // slate-700/50 to slate-600/50
+        },
+        "file": {
+          // Emerald & Teal Theme for Files
+          "active-light": "linear-gradient(to right, #d1fae5, #ccfbf1)", // emerald-100 to teal-100
+          "active-dark": "linear-gradient(to right, rgba(6, 95, 70, 0.3), rgba(20, 184, 166, 0.3))", // emerald-800/30 to teal-800/30
+          "hover-light": "linear-gradient(to right, #ecfdf5, #f0fdfa)", // emerald-50 to teal-50
+          "hover-dark": "linear-gradient(to right, rgba(6, 95, 70, 0.2), rgba(20, 184, 166, 0.2))", // emerald-900/20 to teal-900/20
+          "icon-light": "#059669", // emerald-600
+          "icon-dark": "#34d399", // emerald-400
+          "text-light": "#047857", // emerald-700
+          "text-dark": "#6ee7b7", // emerald-300
+          "bg-light": "linear-gradient(to bottom right, #d1fae5, #ccfbf1)", // emerald-100 to teal-100
+          "bg-dark": "linear-gradient(to bottom right, rgba(6, 95, 70, 0.4), rgba(20, 184, 166, 0.4))", // emerald-800/40 to teal-800/40
+        },
+        "drag": {
+          // Multi-color gradient for drag states
+          "gradient": "linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(147, 51, 234, 0.15), rgba(236, 72, 153, 0.1))", // indigo-500/20 via purple-500/15 to pink-500/10
+          "border": "rgba(129, 140, 248, 0.6)", // indigo-400/60
+          "shadow": "rgba(99, 102, 241, 0.2)", // indigo-500/20
+        },
+        "scrollbar": {
+          "thumb-light": "rgba(203, 213, 225, 0.6)", // slate-300/60
+          "thumb-dark": "rgba(71, 85, 105, 0.6)", // slate-600/60
+          "track-light": "rgba(241, 245, 249, 0.3)", // slate-100/30
+          "track-dark": "rgba(30, 41, 59, 0.3)", // slate-800/30
+        },
+        "header": {
+          "bg-light": "linear-gradient(to right, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.6), rgba(248, 250, 252, 0.8))", // slate-50/80 via white/60 to slate-50/80
+          "bg-dark": "linear-gradient(to right, rgba(30, 41, 59, 0.6), rgba(51, 65, 85, 0.4), rgba(30, 41, 59, 0.6))", // slate-800/60 via slate-700/40 to slate-800/60
+          "border-light": "rgba(226, 232, 240, 0.5)", // slate-200/50
+          "border-dark": "rgba(51, 65, 85, 0.5)", // slate-700/50
+        },
+        "footer": {
+          "bg-light": "linear-gradient(to right, rgba(248, 250, 252, 0.6), rgba(255, 255, 255, 0.4), rgba(248, 250, 252, 0.6))", // slate-50/60 via white/40 to slate-50/60
+          "bg-dark": "linear-gradient(to right, rgba(30, 41, 59, 0.4), rgba(51, 65, 85, 0.2), rgba(30, 41, 59, 0.4))", // slate-800/40 via slate-700/20 to slate-800/40
+        },
         "frozen-blue": "rgba(128, 190, 219, 0.86)", // Custom blue color for the frozen effect
         "frosted-glass": "rgba(255, 255, 255, 0.8)", // Custom frosted glass effect
-        "component-icon": "rgb(255, 159, 28)", // Logo orange
-        "flow-icon": "rgb(45, 212, 191)",      // Logo teal
+        "component-icon": "var(--component-icon)",
+        "flow-icon": "var(--flow-icon)",
         "low-indigo": "var(--low-indigo)",
         "chat-send": "var(--chat-send)",
-        connection: "rgb(139, 92, 246)", // Using logo purple for connections
+        connection: "var(--connection)",
         "almost-dark-gray": "var(--almost-dark-gray)",
         "almost-light-blue": "var(--almost-light-blue)",
         "almost-medium-gray": "var(--almost-medium-gray)",
@@ -172,6 +233,8 @@ const config = {
         "success-foreground": "var(--success-foreground)",
         "accent-pink": "hsl(var(--accent-pink))",
         "accent-pink-foreground": "hsl(var(--accent-pink-foreground))",
+        "accent-purple-foreground": "hsl(var(--accent-purple-foreground))",
+        "accent-red-foreground": "hsl(var(--accent-red-foreground))",
         filter: {
           foreground: "var(--filter-foreground)",
           background: "var(--filter-background)",
@@ -214,9 +277,9 @@ const config = {
           hover: "hsl(var(--primary-hover))",
         },
         secondary: {
-          DEFAULT: "rgb(45, 212, 191)", // Using logo teal as secondary
+          DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          hover: "rgb(20, 184, 166)",
+          hover: "hsl(var(--secondary-hover))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -227,7 +290,7 @@ const config = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "rgb(59, 130, 246)", // Using logo blue as accent
+          DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
         "accent-amber": {
@@ -462,6 +525,52 @@ const config = {
             marginBottom: "0.25rem",
           },
         },
+        // Premium Sidebar Utilities
+        ".bg-sidebar-container": {
+          background: "linear-gradient(to bottom, var(--sidebar-container-light), var(--sidebar-container-light-via), var(--sidebar-container-light-to))",
+        },
+        ".dark .bg-sidebar-container": {
+          background: "linear-gradient(to bottom, var(--sidebar-container-dark), var(--sidebar-container-dark-via), var(--sidebar-container-dark-to))",
+        },
+        ".bg-folder-active": {
+          background: "var(--folder-active-light)",
+        },
+        ".dark .bg-folder-active": {
+          background: "var(--folder-active-dark)",
+        },
+        ".bg-folder-hover": {
+          background: "var(--folder-hover-light)",
+        },
+        ".dark .bg-folder-hover": {
+          background: "var(--folder-hover-dark)",
+        },
+        ".bg-file-active": {
+          background: "var(--file-active-light)",
+        },
+        ".dark .bg-file-active": {
+          background: "var(--file-active-dark)",
+        },
+        ".bg-file-hover": {
+          background: "var(--file-hover-light)",
+        },
+        ".dark .bg-file-hover": {
+          background: "var(--file-hover-dark)",
+        },
+        ".bg-drag-gradient": {
+          background: "var(--drag-gradient)",
+        },
+        ".bg-header": {
+          background: "var(--header-bg-light)",
+        },
+        ".dark .bg-header": {
+          background: "var(--header-bg-dark)",
+        },
+        ".bg-footer": {
+          background: "var(--footer-bg-light)",
+        },
+        ".dark .bg-footer": {
+          background: "var(--footer-bg-dark)",
+        },
       });
     }),
     tailwindcssTypography,
@@ -478,6 +587,7 @@ const config = {
             acc[`.truncate-${className}`] = {
               position: "relative",
               overflow: "hidden",
+              pointerEvents: "none",
               "&::after": {
                 content: '""',
                 position: "absolute",
@@ -491,6 +601,7 @@ const config = {
               acc[`.truncate-${className}`] = {
                 position: "relative",
                 overflow: "hidden",
+                pointerEvents: "none",
                 "&::after": {
                   content: '""',
                   position: "absolute",
@@ -515,7 +626,6 @@ const config = {
       addVariant("group-increment-hover", ":merge(.group-increment):hover &");
       addVariant("group-decrement-hover", ":merge(.group-decrement):hover &");
     }),
-    require("daisyui"),
   ],
 };
 

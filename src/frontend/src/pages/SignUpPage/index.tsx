@@ -6,6 +6,7 @@ import { useCustomNavigate } from "@/customization/hooks/use-custom-navigate";
 import { track } from "@/customization/utils/analytics";
 import * as Form from "@radix-ui/react-form";
 import { FormEvent, useEffect, useState } from "react";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaCheck, FaExclamationTriangle, FaGithub, FaGoogle } from "react-icons/fa";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { SIGNUP_ERROR_ALERT } from "../../constants/alerts_constants";
@@ -23,8 +24,15 @@ import {
 export default function SignUp(): JSX.Element {
   const [inputState, setInputState] =
     useState<signUpInputStateType>(CONTROL_INPUT_STATE);
-
   const [isDisabled, setDisableBtn] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [touched, setTouched] = useState<{ username: boolean; password: boolean; cnfPassword: boolean }>({ 
+    username: false, 
+    password: false, 
+    cnfPassword: false 
+  });
 
   const { password, cnfPassword, username } = inputState;
   const setSuccessData = useAlertStore((state) => state.setSuccessData);
@@ -37,6 +45,7 @@ export default function SignUp(): JSX.Element {
     target: { name, value },
   }: inputHandlerEventType): void {
     setInputState((prev) => ({ ...prev, [name]: value }));
+    setTouched((prev) => ({ ...prev, [name]: true }));
   }
 
   useEffect(() => {
@@ -47,6 +56,7 @@ export default function SignUp(): JSX.Element {
   }, [password, cnfPassword, username, handleInput]);
 
   function handleSignup(): void {
+    setIsLoading(true);
     const { username, password } = inputState;
     const newUser: UserInputType = {
       username: username.trim(),
@@ -62,6 +72,7 @@ export default function SignUp(): JSX.Element {
         navigate("/login");
       },
       onError: (error) => {
+        setIsLoading(false);
         const {
           response: {
             data: { detail },
@@ -75,149 +86,281 @@ export default function SignUp(): JSX.Element {
     });
   }
 
+  function validateEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  const isEmailValid = validateEmail(username);
+  const isPasswordValid = password.trim().length >= 8;
+  const isConfirmPasswordValid = password === cnfPassword && cnfPassword.trim().length > 0;
+  const canSubmit = isEmailValid && isPasswordValid && isConfirmPasswordValid && !isLoading;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f7fa] to-[#c3cfe2]">
-      <Form.Root
-        onSubmit={(event: FormEvent<HTMLFormElement>) => {
-          if (password === "") {
-            event.preventDefault();
-            return;
-          }
-          const data = Object.fromEntries(new FormData(event.currentTarget));
-          event.preventDefault();
-        }}
-        className="w-full max-w-md"
-      >
-        <div className="bg-white rounded-2xl shadow-xl px-8 py-10 flex flex-col items-center w-full">
-          <div className="flex flex-col items-center mb-6">
-            <img src={LangflowLogo} alt="Langflow Logo" className="h-16 w-16 mb-4 rounded-full object-contain" />
-            <h2 className="text-2xl font-semibold text-gray-900 mb-1">Sign up for Sochflow</h2>
-            <p className="text-gray-500 text-sm">Create your account to get started</p>
-          </div>
-          <div className="w-full mb-4">
-            <Form.Field name="username">
-              <Form.Label className="block mb-1 text-gray-700 font-medium">
-                Email
-              </Form.Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-.977 1.872l-7.5 5.25a2.25 2.25 0 01-2.546 0l-7.5-5.25A2.25 2.25 0 012.25 6.993V6.75"/></svg>
-                </span>
-                <Input
-                  type="email"
-                  onChange={({ target: { value } }) => {
-                    handleInput({ target: { name: "username", value } });
-                  }}
-                  value={username}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  required
-                  placeholder="Email"
-                />
+    <div className="min-h-screen flex">
+      {/* Left Panel - Hero Section */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-20" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}></div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-purple-500/20 rounded-full blur-xl"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-indigo-500/15 rounded-full blur-lg"></div>
+        
+        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div className="max-w-md">
+            <div className="flex items-center mb-8">
+              <div className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 border border-white/20">
+                <img src={LangflowLogo} alt="Sochflow Logo" className="w-10 h-10 object-contain" />
               </div>
-              <Form.Message match="valueMissing" className="text-xs text-red-500 mt-1">
-                Please enter your email
-              </Form.Message>
-            </Form.Field>
-          </div>
-          <div className="w-full mb-2">
-            <Form.Field name="password" serverInvalid={password != cnfPassword}>
-              <Form.Label className="block mb-1 text-gray-700 font-medium">
-                Password
-              </Form.Label>
-              <InputComponent
-                onChange={(value) => {
-                  handleInput({ target: { name: "password", value } });
-                }}
-                value={password}
-                isForm
-                password={true}
-                required
-                placeholder="Password"
-                className="w-full pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                leftIcon={
-                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <rect x="5" y="11" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                    <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="1.5" />
-                    <circle cx="12" cy="15" r="1" fill="currentColor" />
-                  </svg>
-                }
-              />
-              <Form.Message className="text-xs text-red-500 mt-1" match="valueMissing">
-                Please enter a password
-              </Form.Message>
-              {password != cnfPassword && (
-                <Form.Message className="text-xs text-red-500 mt-1">
-                  Passwords do not match
-                </Form.Message>
-              )}
-            </Form.Field>
-          </div>
-          <div className="w-full mb-4">
-            <Form.Field name="confirmpassword" serverInvalid={password != cnfPassword}>
-              <Form.Label className="block mb-1 text-gray-700 font-medium">
-                Confirm your password
-              </Form.Label>
-              <InputComponent
-                onChange={(value) => {
-                  handleInput({ target: { name: "cnfPassword", value } });
-                }}
-                value={cnfPassword}
-                isForm
-                password={true}
-                required
-                placeholder="Confirm your password"
-                className="w-full pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                leftIcon={
-                  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                    <rect x="5" y="11" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                    <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="1.5" />
-                    <circle cx="12" cy="15" r="1" fill="currentColor" />
-                  </svg>
-                }
-              />
-              <Form.Message className="text-xs text-red-500 mt-1" match="valueMissing">
-                Please confirm your password
-              </Form.Message>
-            </Form.Field>
-          </div>
-          <div className="w-full">
-            <Form.Submit asChild>
-              <Button
-                disabled={isDisabled}
-                type="submit"
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold py-2 rounded-lg shadow-md hover:from-indigo-600 hover:to-purple-600 transition-colors mt-6"
-                onClick={() => {
-                  handleSignup();
-                }}
-              >
-                Sign up
-              </Button>
-            </Form.Submit>
-          </div>
-          <div className="flex items-center w-full my-3">
-            <div className="flex-grow h-px bg-gray-200" />
-            <span className="mx-3 text-gray-400 text-sm">or continue with</span>
-            <div className="flex-grow h-px bg-gray-200" />
-          </div>
-          <div className="flex w-full gap-3 mb-4">
-            <Button variant="outline" className="w-1/2 flex items-center justify-center gap-2 border-gray-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.877v-6.987h-2.54v-2.89h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.632.771-1.632 1.562v1.875h2.773l-.443 2.89h-2.33v6.987C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z" fill="#1877F2"/></svg>
-              GitHub
-            </Button>
-            <Button variant="outline" className="w-1/2 flex items-center justify-center gap-2 border-gray-300">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21.805 10.023h-9.18v3.954h5.25c-.225 1.2-.9 2.22-1.92 2.892v2.4h3.105c1.815-1.668 2.745-4.125 2.745-6.846 0-.45-.045-.885-.09-1.305z" fill="#4285F4"/><path d="M12.625 21c2.475 0 4.545-.825 6.06-2.25l-3.105-2.4c-.855.57-1.95.915-2.955.915-2.28 0-4.215-1.545-4.905-3.63H4.49v2.28C6 19.095 9.045 21 12.625 21z" fill="#34A853"/><path d="M7.72 13.635a5.89 5.89 0 010-3.78v-2.28H4.49a8.98 8.98 0 000 8.34l3.23-2.28z" fill="#FBBC05"/><path d="M12.625 7.425c1.35 0 2.565.465 3.525 1.38l2.64-2.565C17.165 4.92 15.095 4.05 12.625 4.05c-3.58 0-6.625 1.905-8.135 4.695l3.23 2.28c.69-2.085 2.625-3.6 4.905-3.6z" fill="#EA4335"/></svg>
-              Google
-            </Button>
-          </div>
-          <div className="w-full mt-4">
-            <CustomLink to="/login">
-              <Button className="w-full" variant="outline">
-                Already have an account? <b>Sign in</b>
-              </Button>
-            </CustomLink>
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                  Sochflow
+                </h1>
+                <p className="text-purple-200 text-sm">Enterprise AI Platform</p>
+              </div>
+            </div>
+            
+            <h2 className="text-4xl font-bold mb-6 leading-tight">
+              Join the Future of
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
+                AI Development
+              </span>
+            </h2>
+            
+            <p className="text-lg text-purple-100 mb-8 leading-relaxed">
+              Start building powerful AI applications with enterprise-grade tools, 
+              security, and collaboration features designed for modern teams.
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center mr-3">
+                  <FaCheck className="w-4 h-4 text-green-400" />
+                </div>
+                <span className="text-purple-100">Free to get started</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mr-3">
+                  <FaCheck className="w-4 h-4 text-blue-400" />
+                </div>
+                <span className="text-purple-100">No credit card required</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center mr-3">
+                  <FaCheck className="w-4 h-4 text-purple-400" />
+                </div>
+                <span className="text-purple-100">Instant access to all features</span>
+              </div>
+            </div>
           </div>
         </div>
-      </Form.Root>
+      </div>
+
+      {/* Right Panel - Signup Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center mb-8">
+            <div className="flex items-center">
+              <div className="w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center mr-3">
+                <img src={LangflowLogo} alt="Sochflow Logo" className="w-8 h-8 object-contain" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Sochflow</h1>
+                <p className="text-gray-500 text-sm">Enterprise AI Platform</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/95 w-full backdrop-blur-sm rounded-3xl border border-white/20 p-8 relative overflow-hidden">
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-white/30 to-indigo-50/20 rounded-3xl"></div>
+            
+            {/* Content wrapper */}
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h2>
+                <p className="text-gray-600">Join thousands of developers building AI applications</p>
+              </div>
+
+              <Form.Root
+                onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                  if (!canSubmit) {
+                    event.preventDefault();
+                    setTouched({ username: true, password: true, cnfPassword: true });
+                    return;
+                  }
+                  handleSignup();
+                  const data = Object.fromEntries(new FormData(event.currentTarget));
+                  event.preventDefault();
+                }}
+                className="space-y-6"
+              >
+                <Form.Field name="username">
+                  <Form.Label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Email Address
+                  </Form.Label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaEnvelope className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      type="email"
+                      onChange={({ target: { value } }) => {
+                        handleInput({ target: { name: "username", value } });
+                      }}
+                      value={username}
+                      className="w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                      required
+                      placeholder="Enter your email"
+                      onBlur={() => setTouched((prev) => ({ ...prev, username: true }))}
+                    />
+                  </div>
+                  {touched.username && !isEmailValid && (
+                    <div className="flex items-center mt-2 text-sm text-red-600">
+                      <FaExclamationTriangle className="w-4 h-4 mr-1" />
+                      Please enter a valid email address
+                    </div>
+                  )}
+                </Form.Field>
+
+                <Form.Field name="password">
+                  <Form.Label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password
+                  </Form.Label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaLock className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <InputComponent
+                      onChange={(value) => {
+                        handleInput({ target: { name: "password", value } });
+                      }}
+                      value={password}
+                      isForm
+                      password={!showPassword}
+                      required
+                      placeholder="Create a password"
+                      className="w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                      onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      {showPassword ? (
+                        <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      ) : (
+                        <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      )}
+                    </button>
+                  </div>
+                  {touched.password && !isPasswordValid && (
+                    <div className="flex items-center mt-2 text-sm text-red-600">
+                      <FaExclamationTriangle className="w-4 h-4 mr-1" />
+                      Password must be at least 8 characters long
+                    </div>
+                  )}
+                </Form.Field>
+
+                <Form.Field name="confirmpassword">
+                  <Form.Label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Confirm Password
+                  </Form.Label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaLock className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <InputComponent
+                      onChange={(value) => {
+                        handleInput({ target: { name: "cnfPassword", value } });
+                      }}
+                      value={cnfPassword}
+                      isForm
+                      password={!showConfirmPassword}
+                      required
+                      placeholder="Confirm your password"
+                      className="w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                      onBlur={() => setTouched((prev) => ({ ...prev, cnfPassword: true }))}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      {showConfirmPassword ? (
+                        <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      ) : (
+                        <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      )}
+                    </button>
+                  </div>
+                  {touched.cnfPassword && !isConfirmPasswordValid && (
+                    <div className="flex items-center mt-2 text-sm text-red-600">
+                      <FaExclamationTriangle className="w-4 h-4 mr-1" />
+                      Passwords do not match
+                    </div>
+                  )}
+                </Form.Field>
+
+                <div className="flex items-start">
+                  <input 
+                    type="checkbox" 
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mt-1"
+                    required
+                  />
+                  <label className="ml-2 text-sm text-gray-600">
+                    I agree to the{" "}
+                    <a href="#" className="text-indigo-600 hover:text-indigo-500 font-medium">
+                      Terms of Service
+                    </a>{" "}
+                    and{" "}
+                    <a href="#" className="text-indigo-600 hover:text-indigo-500 font-medium">
+                      Privacy Policy
+                    </a>
+                  </label>
+                </div>
+
+                <Form.Submit asChild>
+                  <Button
+                    disabled={!canSubmit}
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating account...
+                      </div>
+                    ) : (
+                      "Create Account"
+                    )}
+                  </Button>
+                </Form.Submit>
+              </Form.Root>
+
+              <div className="mt-8 text-center">
+                <CustomLink to="/login">
+                  <Button 
+                    className="w-full bg-gray-50/80 backdrop-blur-sm text-gray-700 font-medium py-3 rounded-xl border border-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200" 
+                    variant="outline" 
+                    type="button"
+                  >
+                    Already have an account? <span className="font-semibold text-indigo-600 ml-1">Sign in</span>
+                  </Button>
+                </CustomLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

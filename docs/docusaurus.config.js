@@ -200,9 +200,10 @@ const config = {
             from: ["/starter-projects-document-qa", "/tutorials-document-qa"],
           },
           {
-            to: "/starter-projects-simple-agent",
+            to: "/simple-agent",
             from: [
               "/math-agent",
+              "/starter-projects-simple-agent",
               "/starter-projects-math-agent",
               "/tutorials-math-agent",
             ],
@@ -251,14 +252,34 @@ const config = {
             from: "/components/custom",
           },
           {
+            to: "/components-bundle-components",
+            from: "/components-loaders",
+          },
+          {
             to: "/mcp-server",
             from: "/integrations-mcp",
+          },
+          {
+            to: "/integrations-nvidia-g-assist",
+            from: "/integrations-nvidia-system-assist",
           },
           {
             to: "/deployment-kubernetes-dev",
             from: [
               "/deployment-kubernetes",
             ],
+          },
+          {
+            to: "/basic-prompting",
+            from: "/starter-projects-basic-prompting",
+          },
+          {
+            to: "/vector-store-rag",
+            from: "/starter-projects-vector-store-rag",
+          },
+          {
+            to: "/contributing-github-issues",
+            from: "/contributing-github-discussions",
           },
           // add more redirects like this
           // {
@@ -288,8 +309,8 @@ const config = {
         hideOnScroll: true,
         logo: {
           alt: "Langflow",
-          src: "img/langflow-logo-black.svg",
-          srcDark: "img/langflow-logo-white.svg",
+          src: "img/lf-docs-light.svg",
+          srcDark: "img/lf-docs-dark.svg",
         },
         items: [
           // right
@@ -342,8 +363,8 @@ const config = {
       footer: {
         logo: {
           alt: "Langflow",
-          src: "img/langflow-logo-black.svg",
-          srcDark: "img/langflow-logo-white.svg",
+          src: "img/lf-docs-light.svg",
+          srcDark: "img/lf-docs-dark.svg",
           width: 160,
           height: 40,
         },
@@ -354,7 +375,7 @@ const config = {
               {
                 html: `<div class="footer-links">
                   <span>© ${new Date().getFullYear()} Langflow</span>
-                  <span id="preferenceCenterContainer"> ·&nbsp; <a href="/cookies">Manage Privacy Choices</a></span>
+                  <span id="preferenceCenterContainer"> ·&nbsp; <a href="https://langflow.org/preferences">Manage Privacy Choices</a></span>
                   </div>`,
               },
             ],

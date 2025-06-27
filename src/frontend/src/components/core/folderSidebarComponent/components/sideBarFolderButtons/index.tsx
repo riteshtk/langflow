@@ -21,14 +21,18 @@ import {
   usePostUploadFolders,
 } from "@/controllers/API/queries/folders";
 import { useGetDownloadFolders } from "@/controllers/API/queries/folders/use-get-download-folders";
+import { CustomStoreButton } from "@/customization/components/custom-store-button";
+import CustomSideBarFoldersButtonsComponent from "@/customization/components/custom-sidebar-folder";
 import {
   ENABLE_CUSTOM_PARAM,
+  ENABLE_CUSTOM_SIDEBAR_FOLDER,
   ENABLE_DATASTAX_LANGFLOW,
   ENABLE_FILE_MANAGEMENT,
   ENABLE_MCP_NOTICE,
 } from "@/customization/feature-flags";
 import { useCustomNavigate } from "@/customization/hooks/use-custom-navigate";
 import { track } from "@/customization/utils/analytics";
+import { customGetDownloadFolderBlob } from "@/customization/utils/custom-get-download-folders";
 import { createFileUpload } from "@/helpers/create-file-upload";
 import { getObjectsFromFilelist } from "@/helpers/get-objects-from-filelist";
 import useUploadFlow from "@/hooks/flows/use-upload-flow";
@@ -55,7 +59,7 @@ type SideBarFoldersButtonsComponentProps = {
   handleDeleteFolder?: (item: FolderType) => void;
   handleFilesClick?: () => void;
 };
-const SideBarFoldersButtonsComponent = ({
+const OriginalSideBarFoldersButtonsComponent = ({
   handleChangeFolder,
   handleDeleteFolder,
   handleFilesClick,
@@ -168,35 +172,14 @@ const SideBarFoldersButtonsComponent = ({
     });
   };
 
-  const handleDownloadFolder = (id: string) => {
+  const handleDownloadFolder = (id: string, folderName: string) => {
     mutateDownloadFolder(
       {
         folderId: id,
       },
       {
         onSuccess: (response) => {
-          // Create a blob from the response data
-          const blob = new Blob([response.data], {
-            type: "application/x-zip-compressed",
-          });
-
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-
-          // Get filename from header or use default
-          const filename =
-            response.headers?.["content-disposition"]
-              ?.split("filename=")[1]
-              ?.replace(/['"]/g, "") ?? "flows.zip";
-
-          link.setAttribute("download", filename);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
-
-          track("Project Exported", { folderId: id });
+          customGetDownloadFolderBlob(response, id, folderName, setSuccessData);
         },
         onError: (e) => {
           setErrorData({
@@ -496,8 +479,12 @@ const SideBarFoldersButtonsComponent = ({
                             item={item}
                             index={index}
                             handleDeleteFolder={handleDeleteFolder}
-                            handleDownloadFolder={handleDownloadFolder}
-                            handleSelectFolderToRename={handleSelectFolderToRename}
+                            handleDownloadFolder={() =>
+                              handleDownloadFolder(item.id!, item.name)
+                            }
+                            handleSelectFolderToRename={
+                              handleSelectFolderToRename
+                            }
                             checkPathName={checkPathName}
                           />
                         </div>
@@ -523,12 +510,10 @@ const SideBarFoldersButtonsComponent = ({
         )}
       </SidebarContent>
       {ENABLE_FILE_MANAGEMENT && (
-        <SidebarFooter className="border-t border-border/50 bg-background/60 dark:bg-background/40 rounded-b-xl">
-          <div className="px-4 py-3">
-            <div className="mb-3 px-2 flex items-center justify-between">
-              <h2 className="text-sm font-semibold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:from-primary/80 dark:to-primary">Resources</h2>
-              <div className="h-[2px] flex-1 mx-3 bg-gradient-to-r from-border/50 to-transparent"></div>
-            </div>
+        <SidebarFooter className="border-t">
+          <div className="grid w-full items-center gap-2 p-2">
+            {/* TODO: Remove this on cleanup */}
+            {ENABLE_DATASTAX_LANGFLOW && <CustomStoreButton />}
             <SidebarMenuButton
               isActive={checkPathFiles}
               onClick={() => handleFilesClick?.()}
@@ -559,4 +544,16 @@ const SideBarFoldersButtonsComponent = ({
     </Sidebar>
   );
 };
+
+
+const SideBarFoldersButtonsComponent = (props: SideBarFoldersButtonsComponentProps) => {
+  // If custom sidebar is enabled, use the custom component
+  if (ENABLE_CUSTOM_SIDEBAR_FOLDER) {
+    return <CustomSideBarFoldersButtonsComponent {...props} />;
+  }
+
+  // Otherwise, use the original component
+  return <OriginalSideBarFoldersButtonsComponent {...props} />;
+};
+
 export default SideBarFoldersButtonsComponent;

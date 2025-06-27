@@ -7,7 +7,9 @@ import {
   TWITTER_URL,
 } from "@/constants/constants";
 import { useLogout } from "@/controllers/API/queries/auth";
-import { ENABLE_DATASTAX_LANGFLOW } from "@/customization/feature-flags";
+import { CustomProfileIcon } from "@/customization/components/custom-profile-icon";
+import { CustomSochflowHeaderMenu } from "@/customization/components/custom-header-menu";
+import { ENABLE_DATASTAX_LANGFLOW, SOCHFLOW } from "@/customization/feature-flags";
 import { useCustomNavigate } from "@/customization/hooks/use-custom-navigate";
 import useAuthStore from "@/stores/authStore";
 import { useDarkStore } from "@/stores/darkStore";
@@ -25,6 +27,12 @@ import { ProfileIcon } from "../ProfileIcon";
 import ThemeButtons from "../ThemeButtons";
 
 export const AccountMenu = () => {
+  // If SOCHFLOW feature flag is enabled, use the custom header menu
+  if (SOCHFLOW) {
+    return <CustomSochflowHeaderMenu />;
+  }
+
+  // Original AccountMenu implementation for non-Sochflow
   const { customParam: id } = useParams();
   const version = useDarkStore((state) => state.version);
   const latestVersion = useDarkStore((state) => state.latestVersion);
@@ -50,9 +58,7 @@ export const AccountMenu = () => {
             className="group h-9 w-9 overflow-hidden rounded-full ring-2 ring-border/50 transition-all duration-300 hover:ring-4 hover:ring-border focus-visible:outline-0 active:scale-95"
             data-testid="user-profile-settings"
           >
-            <div className="transition-transform duration-300 group-hover:scale-110">
-              <ProfileIcon />
-            </div>
+            <CustomProfileIcon />
           </div>
         </HeaderMenuToggle>
         <HeaderMenuItems position="right" classNameSize="w-[320px]">
