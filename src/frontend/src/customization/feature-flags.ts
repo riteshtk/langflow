@@ -15,5 +15,6 @@ export const ENABLE_VOICE_ASSISTANT = true;
 export const ENABLE_IMAGE_ON_PLAYGROUND = true;
 export const ENABLE_MCP = true;
 export const ENABLE_MCP_NOTICE = true;
+
 export const ENABLE_CUSTOM_SIDEBAR_FOLDER = true;
 export const SOCHFLOW = true;

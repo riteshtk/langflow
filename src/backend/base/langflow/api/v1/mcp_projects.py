@@ -32,11 +32,10 @@ from langflow.api.v1.mcp import (
 )
 from langflow.api.v1.schemas import MCPInstallRequest, MCPSettings, SimplifiedAPIRequest
 from langflow.base.mcp.constants import MAX_MCP_SERVER_NAME_LENGTH, MAX_MCP_TOOL_NAME_LENGTH
-from langflow.base.mcp.util import get_flow_snake_case, get_unique_name
+from langflow.base.mcp.util import get_flow_snake_case, get_unique_name, sanitize_mcp_name
 from langflow.helpers.flow import json_schema_from_flow
 from langflow.schema.message import Message
 from langflow.services.database.models import Flow, Folder
-from langflow.services.database.models.folder.constants import DEFAULT_FOLDER_NAME, NEW_FOLDER_NAME
 from langflow.services.deps import get_settings_service, get_storage_service, session_scope
 from langflow.services.storage.utils import build_content_type_from_extension
 
@@ -96,10 +95,10 @@ async def list_project_tools(
                     continue
 
                 # Format the flow name according to MCP conventions (snake_case)
-                flow_name = "_".join(flow.name.lower().split())
+                flow_name = sanitize_mcp_name(flow.name)
 
                 # Use action_name and action_description if available, otherwise use defaults
-                name = flow.action_name or flow_name
+                name = sanitize_mcp_name(flow.action_name) if flow.action_name else flow_name
                 description = flow.action_description or (
                     flow.description if flow.description else f"Tool generated from flow: {flow_name}"
                 )
@@ -327,7 +326,7 @@ async def install_mcp_config(
     request: Request,
     current_user: CurrentActiveMCPUser,
 ):
-    """Install MCP server configuration for Cursor or Claude."""
+    """Install MCP server configuration for Cursor, Windsurf, or Claude."""
     # Check if the request is coming from a local IP address
     client_ip = get_client_ip(request)
     if not is_local_ip(client_ip):
@@ -390,24 +389,25 @@ async def install_mcp_config(
             logger.debug("Windows detected, using cmd command")
 
         name = project.name
-        name = NEW_FOLDER_NAME if name == DEFAULT_FOLDER_NAME else name
 
         # Create the MCP configuration
         mcp_config = {
             "mcpServers": {
-                f"lf-{name.lower().replace(' ', '_')[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}": {
+                f"lf-{sanitize_mcp_name(name)[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}": {
                     "command": command,
                     "args": args,
                 }
             }
         }
 
-        server_name = f"lf-{name.lower().replace(' ', '_')[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}"
+        server_name = f"lf-{sanitize_mcp_name(name)[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}"
         logger.debug("Installing MCP config for project: %s (server name: %s)", project.name, server_name)
 
         # Determine the config file path based on the client and OS
         if body.client.lower() == "cursor":
             config_path = Path.home() / ".cursor" / "mcp.json"
+        elif body.client.lower() == "windsurf":
+            config_path = Path.home() / ".codeium" / "windsurf" / "mcp_config.json"
         elif body.client.lower() == "claude":
             if os_type == "Darwin":  # macOS
                 config_path = Path.home() / "Library" / "Application Support" / "Claude" / "claude_desktop_config.json"
@@ -502,7 +502,7 @@ async def check_installed_mcp_servers(
     project_id: UUID,
     current_user: CurrentActiveMCPUser,
 ):
-    """Check if MCP server configuration is installed for this project in Cursor or Claude."""
+    """Check if MCP server configuration is installed for this project in Cursor, Windsurf, or Claude."""
     try:
         # Verify project exists and user has access
         async with session_scope() as session:
@@ -515,8 +515,7 @@ async def check_installed_mcp_servers(
 
         # Project server name pattern (must match the logic in install function)
         name = project.name
-        name = NEW_FOLDER_NAME if name == DEFAULT_FOLDER_NAME else name
-        project_server_name = f"lf-{name.lower().replace(' ', '_')[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}"
+        project_server_name = f"lf-{sanitize_mcp_name(name)[: (MAX_MCP_SERVER_NAME_LENGTH - 4)]}"
 
         logger.debug(
             "Checking for installed MCP servers for project: %s (server name: %s)", project.name, project_server_name
@@ -543,6 +542,27 @@ async def check_installed_mcp_servers(
                         )
             except json.JSONDecodeError:
                 logger.warning("Failed to parse Cursor config JSON at: %s", cursor_config_path)
+
+        # Check Windsurf configuration
+        windsurf_config_path = Path.home() / ".codeium" / "windsurf" / "mcp_config.json"
+        logger.debug(
+            "Checking Windsurf config at: %s (exists: %s)", windsurf_config_path, windsurf_config_path.exists()
+        )
+        if windsurf_config_path.exists():
+            try:
+                with windsurf_config_path.open("r") as f:
+                    windsurf_config = json.load(f)
+                    if "mcpServers" in windsurf_config and project_server_name in windsurf_config["mcpServers"]:
+                        logger.debug("Found Windsurf config for project server: %s", project_server_name)
+                        results.append("windsurf")
+                    else:
+                        logger.debug(
+                            "Windsurf config exists but no entry for server: %s (available servers: %s)",
+                            project_server_name,
+                            list(windsurf_config.get("mcpServers", {}).keys()),
+                        )
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse Windsurf config JSON at: %s", windsurf_config_path)
 
         # Check Claude configuration
         claude_config_path = None
@@ -647,7 +667,9 @@ class ProjectMCPServer:
                             continue
 
                         # Use action_name if available, otherwise construct from flow name
-                        base_name = flow.action_name or "_".join(flow.name.lower().split())
+                        base_name = (
+                            sanitize_mcp_name(flow.action_name) if flow.action_name else sanitize_mcp_name(flow.name)
+                        )
                         name = get_unique_name(base_name, MAX_MCP_TOOL_NAME_LENGTH, existing_names)
 
                         # Use action_description if available, otherwise use defaults
@@ -816,20 +838,25 @@ class ProjectMCPServer:
                                 stream=False,
                                 api_key_user=current_user,
                             )
-                            # Process all outputs and messages
+                            # Process all outputs and messages, ensuring no duplicates
+                            processed_texts = set()
+
+                            def add_result(text: str):
+                                if text not in processed_texts:
+                                    processed_texts.add(text)
+                                    collected_results.append(types.TextContent(type="text", text=text))
+
                             for run_output in result.outputs:
                                 for component_output in run_output.outputs:
                                     # Handle messages
                                     for msg in component_output.messages or []:
-                                        text_content = types.TextContent(type="text", text=msg.message)
-                                        collected_results.append(text_content)
+                                        add_result(msg.message)
                                     # Handle results
                                     for value in (component_output.results or {}).values():
                                         if isinstance(value, Message):
-                                            text_content = types.TextContent(type="text", text=value.get_text())
-                                            collected_results.append(text_content)
+                                            add_result(value.get_text())
                                         else:
-                                            collected_results.append(types.TextContent(type="text", text=str(value)))
+                                            add_result(str(value))
                         except Exception as e:  # noqa: BLE001
                             error_msg = f"Error Executing the {flow.name} tool. Error: {e!s}"
                             collected_results.append(types.TextContent(type="text", text=error_msg))

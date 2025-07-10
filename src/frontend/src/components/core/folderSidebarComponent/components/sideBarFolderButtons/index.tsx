@@ -10,10 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  DEFAULT_FOLDER,
-  DEFAULT_FOLDER_DEPRECATED,
-} from "@/constants/constants";
+import { DEFAULT_FOLDER } from "@/constants/constants";
 import { useUpdateUser } from "@/controllers/API/queries/auth";
 import {
   usePatchFolders,
@@ -279,7 +276,7 @@ const OriginalSideBarFoldersButtonsComponent = ({
   };
 
   const handleDoubleClick = (event, item) => {
-    if (item.name === DEFAULT_FOLDER_DEPRECATED) {
+    if (item.name === DEFAULT_FOLDER) {
       return;
     }
 
@@ -462,10 +459,8 @@ const OriginalSideBarFoldersButtonsComponent = ({
                                   handleKeyDown={handleKeyDown}
                                 />
                               ) : (
-                                <span className="block w-0 grow truncate text-sm opacity-100 transition-colors duration-300 dark:text-foreground">
-                                  {item.name === DEFAULT_FOLDER_DEPRECATED
-                                    ? DEFAULT_FOLDER
-                                    : item.name}
+                                <span className="block w-0 grow truncate text-sm opacity-100">
+                                  {item.name}
                                 </span>
                               )}
                             </div>

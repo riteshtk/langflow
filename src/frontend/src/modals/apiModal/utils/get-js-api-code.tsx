@@ -1,23 +1,20 @@
 import { customGetHostProtocol } from "@/customization/utils/custom-get-host-protocol";
 
 /**
- * Generates JavaScript code for making API calls to a Langflow endpoint.
+ * Generates JavaScript code for making API calls to a SOCHFLOW endpoint.
  *
  * @param {Object} params - The parameters for generating the API code
  * @param {string} params.flowId - The ID of the flow to run
- * @param {boolean} params.isAuthenticated - Whether authentication is required
  * @param {string} params.endpointName - The endpoint name for the flow
  * @param {Object} params.processedPayload - The pre-processed payload object
  * @returns {string} Generated JavaScript code as a string
  */
 export function getNewJsApiCode({
   flowId,
-  isAuthenticated,
   endpointName,
   processedPayload,
 }: {
   flowId: string;
-  isAuthenticated: boolean;
   endpointName: string;
   processedPayload: any;
 }): string {
@@ -32,21 +29,17 @@ export function getNewJsApiCode({
 
   const payloadString = JSON.stringify(payloadWithSession, null, 4);
 
-  return `${
-    isAuthenticated
-      ? `// Get API key from environment variable
-if (!process.env.FLOW_API_KEY) {
-    throw new Error('FLOW_API_KEY environment variable not found. Please set your API key in the environment variables.');
+  return `// Get API key from environment variable
+if (!process.env.SOCHFLOW_API_KEY) {
+    throw new Error('SOCHFLOW_API_KEY environment variable not found. Please set your API key in the environment variables.');
 }
 
-`
-      : ""
-  }const payload = ${payloadString};
+const payload = ${payloadString};
 
 const options = {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json'${isAuthenticated ? ',\n        "x-api-key": process.env.LANGFLOW_API_KEY' : ""}
+        'Content-Type': 'application/json',\n        "x-api-key": process.env.SOCHFLOW_API_KEY
     },
     body: JSON.stringify(payload)
 };
