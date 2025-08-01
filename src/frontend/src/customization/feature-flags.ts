@@ -18,3 +18,4 @@ export const ENABLE_MCP_NOTICE = true;
 
 export const ENABLE_CUSTOM_SIDEBAR_FOLDER = true;
 export const SOCHFLOW = true;
+export const ENABLE_MCP_COMPOSER = process.env.LANGFLOW_FEATURE_MCP_COMPOSER === "true";

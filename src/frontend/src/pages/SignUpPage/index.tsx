@@ -15,10 +15,10 @@ import {
   SIGN_UP_SUCCESS,
 } from "../../constants/constants";
 import useAlertStore from "../../stores/alertStore";
-import {
-  UserInputType,
+import type {
   inputHandlerEventType,
   signUpInputStateType,
+  UserInputType,
 } from "../../types/components";
 
 export default function SignUp(): JSX.Element {

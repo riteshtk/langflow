@@ -1,7 +1,7 @@
 // src/constants/constants.ts
 
 import custom from "../customization/config-constants";
-import { languageMap } from "../types/components";
+import type { languageMap } from "../types/components";
 
 /**
  * invalid characters for flow name
@@ -761,7 +761,7 @@ export const BUNDLES_SIDEBAR_FOLDER_NAMES = [
   "assemblyai",
   "LangWatch",
   "langwatch",
-  "Youtube",
+  "YouTube",
   "youtube",
 ];
 
@@ -1091,3 +1091,5 @@ export const DATASTAX_DOCS_URL =
   "https://docs.sochflow.com/en/sochflow/index.html";
 
 export const UUID_PARSING_ERROR = "uuid_parsing";
+
+export const DEFAULT_FOLDER_DEPRECATED = "Default Folder";

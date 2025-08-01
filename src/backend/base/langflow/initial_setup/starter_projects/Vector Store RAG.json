@@ -318,7 +318,10 @@
             "icon": "MessagesSquare",
             "legacy": false,
             "lf_version": "1.2.0",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "192913db3453",
+              "module": "langflow.components.input_output.chat.ChatInput"
+            },
             "output_types": [],
             "outputs": [
               {
@@ -611,7 +614,10 @@
             "is_output": null,
             "legacy": false,
             "lf_version": "1.1.1",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "3bf0b511e227",
+              "module": "langflow.components.prompts.prompt.PromptComponent"
+            },
             "name": "",
             "output_types": [],
             "outputs": [
@@ -786,7 +792,10 @@
             "icon": "scissors-line-dashed",
             "legacy": false,
             "lf_version": "1.1.1",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "dbf2e9d2319d",
+              "module": "langflow.components.processing.split_text.SplitTextComponent"
+            },
             "output_types": [],
             "outputs": [
               {
@@ -1071,7 +1080,10 @@
             "icon": "MessagesSquare",
             "legacy": false,
             "lf_version": "1.1.1",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "6f74e04e39d5",
+              "module": "langflow.components.input_output.chat_output.ChatOutput"
+            },
             "output_types": [],
             "outputs": [
               {
@@ -1385,7 +1397,10 @@
             "icon": "OpenAI",
             "legacy": false,
             "lf_version": "1.2.0",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "2691dee277c9",
+              "module": "langflow.components.openai.openai.OpenAIEmbeddingsComponent"
+            },
             "output_types": [],
             "outputs": [
               {
@@ -1918,7 +1933,10 @@
             "icon": "OpenAI",
             "legacy": false,
             "lf_version": "1.1.1",
-            "metadata": {},
+            "metadata": {
+              "code_hash": "2691dee277c9",
+              "module": "langflow.components.openai.openai.OpenAIEmbeddingsComponent"
+            },
             "output_types": [],
             "outputs": [
               {
@@ -3358,7 +3376,10 @@
             "frozen": false,
             "icon": "AstraDB",
             "legacy": false,
-            "metadata": {},
+            "metadata": {
+              "code_hash": "38a337e89ff4",
+              "module": "langflow.components.vectorstores.astradb.AstraDBVectorStoreComponent"
+            },
             "minimized": false,
             "output_types": [],
             "outputs": [
@@ -4120,7 +4141,10 @@
             "frozen": false,
             "icon": "AstraDB",
             "legacy": false,
-            "metadata": {},
+            "metadata": {
+              "code_hash": "38a337e89ff4",
+              "module": "langflow.components.vectorstores.astradb.AstraDBVectorStoreComponent"
+            },
             "minimized": false,
             "output_types": [],
             "outputs": [
